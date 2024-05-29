@@ -17,6 +17,7 @@ try:
 
     # Get first results.
     driver.get(modified_url)
+    time.sleep(15)
         
     # Specify the range of the year I want to search.
     start_year_select = driver.find_element(By.CSS_SELECTOR, 'select[formcontrolname="planYearSt"')
@@ -25,6 +26,7 @@ try:
     # Adjust listnumber in page
     pagenum_select = driver.find_element(By.CSS_SELECTOR, 'option[value="200"')
     pagenum_select.click()
+    time.sleep(15)
     
     # Select the years. From... to...
     Select(start_year_select).select_by_value('113')
@@ -33,16 +35,16 @@ try:
     # Find search button and start to search.
     search_button = driver.find_element(By.CLASS_NAME, 'butsearch')
     search_button.click()
-    
-    # Wait for the results to load (you may need to adjust the sleep duration based on your internet speed)
-    time.sleep(5)
+    time.sleep(15)
 
     # Fide page number
     max_page_number = int(len(driver.find_elements(By.CLASS_NAME, 'page')))
     
     # Extract data for 'conTitle' and 'conInfo'
     titles = []
-    infos = []
+    pi = []
+    year = []
+    expen = []
 
     for page in range(1, max_page_number + 1):
         # Find all project title and project info
@@ -54,7 +56,9 @@ try:
 
         for title, info in zip(con_titles, con_infos):
             titles.append(title.text)
-            infos.append(info.text)
+            pi.append(info.text.split(' ')[1])
+            year.append(info.text.split('：')[3].strip('當年度經費'))
+            expen.append(info.text.split(' ')[3] + ' k')
         
         # Navigate to next page and repeat finding project step
         if page < max_page_number:
@@ -66,7 +70,9 @@ try:
     # Create a DataFrame and save to Excel
     df = pd.DataFrame({
         'Project': titles,
-        'PI': infos
+        'PI': pi,
+        'Year': year,
+        'Expenditures': expen,
     })
     df.to_excel('get_projects_113.xlsx', index=False)
     print('Data has been saved to output.xlsx')
