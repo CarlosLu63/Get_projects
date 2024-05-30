@@ -46,26 +46,39 @@ try:
     year = []
     expen = []
 
-    for page in range(1, max_page_number + 1):
-        # Find all project title and project info
+    if max_page_number == 0:
         con_titles = driver.find_elements(By.CLASS_NAME, 'conTitle')
         con_infos = driver.find_elements(By.CLASS_NAME, 'conInfo')
         
-        # Ensure both lists are of the same length
         assert len(con_titles) == len(con_infos), "Mismatch in number of titles and infos"
-
+        
         for title, info in zip(con_titles, con_infos):
             titles.append(title.text)
             pi.append(info.text.split(' ')[1])
             year.append(info.text.split('：')[3].strip('當年度經費'))
             expen.append(info.text.split(' ')[3] + ' k')
-        
-        # Navigate to next page and repeat finding project step
-        if page < max_page_number:
-            next_page_link = driver.find_element(By.LINK_TEXT, str(page + 1))
-            next_page_link.click()
-            # Wait for the new page to load
-            time.sleep(5)
+
+    else:
+        for page in range(1, max_page_number + 1):
+            # Find all project title and project info
+            con_titles = driver.find_elements(By.CLASS_NAME, 'conTitle')
+            con_infos = driver.find_elements(By.CLASS_NAME, 'conInfo')
+            
+            # Ensure both lists are of the same length
+            assert len(con_titles) == len(con_infos), "Mismatch in number of titles and infos"
+
+            for title, info in zip(con_titles, con_infos):
+                titles.append(title.text)
+                pi.append(info.text.split(' ')[1])
+                year.append(info.text.split('：')[3].strip('當年度經費'))
+                expen.append(info.text.split(' ')[3] + ' k')
+            
+            # Navigate to next page and repeat finding project step
+            if page < max_page_number:
+                next_page_link = driver.find_element(By.LINK_TEXT, str(page + 1))
+                next_page_link.click()
+                # Wait for the new page to load
+                time.sleep(5)
             
     # Create a DataFrame and save to Excel
     df = pd.DataFrame({
