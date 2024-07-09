@@ -27,15 +27,11 @@ All_project = pd.DataFrame({'PI':[],
 #All_project = pd.concat([All_project, get_table(url, 113, '邱亞芳')], axis=0, ignore_index=True)
 
 All_project = pd.concat([All_project, get_table(input('Please enter URL: '), 113, input('Please enter PI name: '))], axis=0, ignore_index=True)
-#CGU_project = All_project
-CGUST_project = All_project
-
 
 ###Write projects to excel file
 excel_workbook = load_workbook("113_Projects.xlsx")
 writer = pd.ExcelWriter("113_Projects.xlsx", engine='openpyxl')
 
-CGU_project.to_excel(writer, sheet_name = '長庚大學', index = False)
-CGUST_project.to_excel(writer, sheet_name = '長庚科大', index = False)
+All_project.to_excel(writer, sheet_name = '中央大學', index = False)
 
 writer.close()
