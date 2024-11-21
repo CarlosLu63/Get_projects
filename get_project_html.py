@@ -3,12 +3,12 @@ import pandas as pd
 import os
 from openpyxl import load_workbook
 
-os.chdir('C:/Users/Carlos_Lu/Desktop/BIOTOOLS/01_業務資料')
+os.chdir('C:/Users/Carlos_Lu/Desktop/Main_files/Projects/BIOTOOLS_script/Get_project_results')
 
 def get_table(url, year, pi):
     html = requests.get(url).content
     df_list = pd.read_html(html)
-    df = df_list[-1]
+    df = df_list[1]
     df = df[lambda x: x.年度 == year]
     df['PI'] = pi
     return df
@@ -32,6 +32,6 @@ All_project = pd.concat([All_project, get_table(input('Please enter URL: '), 113
 excel_workbook = load_workbook("113_Projects.xlsx")
 writer = pd.ExcelWriter("113_Projects.xlsx", engine='openpyxl')
 
-All_project.to_excel(writer, sheet_name = '中央大學', index = False)
+All_project.to_excel(writer, sheet_name = '輔仁大學', index = False)
 
 writer.close()
